@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="author" content="" />
+  <meta name="dcterms.date" content="" />
+  <title></title>
+  <link rel="stylesheet" href="paper.css" />
+</head>
+<body>
+<header id="title-block-header">
+  <h1 class="title"></h1>
+  <p class="subtitle"></p>
+  <p class="author"></p>
+  <p class="date"></p>
+</header>
+<h1>基準模型比較：AI4I 2020 預測性維護</h1>
+<ul>
+<li>資料筆數：10000，欄位數：16</li>
+<li>失效比例：3.39%（類別嚴重不平衡，不採用 Accuracy 做主指標）</li>
+<li>切分：分層 70/30（seed = 42），以 recall / F1 / PR-AUC / ROC-AUC 評估</li>
+<li>失效模式分布：twf 46, hdf 115, pwf 95, osf 98, rnf 19</li>
+</ul>
+<h2>特徵工程</h2>
+<ul>
+<li><code>type</code> one-hot 編碼（drop first）</li>
+<li>派生特徵：<code>torque_speed_product</code>（扭矩 × 轉速）、<code>temperature_difference</code>（製程溫度 − 環境溫度）</li>
+<li>資料外洩防護：移除 <code>udi</code>、<code>product_id</code>，並且<strong>不使用</strong> 5 個失效模式欄位作為特徵</li>
+<li>不平衡處理：Logistic Regression / Decision Tree 使用 <code>class_weight=balanced</code>，Random Forest 使用 <code>balanced_subsample</code></li>
+</ul>
+<h2>Top 5 區辨特徵</h2>
+<pre><code class="language-text">- rotational_speed
+- tool_wear
+- torque
+</code></pre>
+<h2>模型比較（測試集）</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"></th>
+<th style="text-align: right;">recall</th>
+<th style="text-align: right;">f1</th>
+<th style="text-align: right;">pr_auc</th>
+<th style="text-align: right;">roc_auc</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">logistic_regression</td>
+<td style="text-align: right;">0.823529</td>
+<td style="text-align: right;">0.301616</td>
+<td style="text-align: right;">0.424235</td>
+<td style="text-align: right;">0.917096</td>
+</tr>
+<tr>
+<td style="text-align: left;">decision_tree</td>
+<td style="text-align: right;">0.813725</td>
+<td style="text-align: right;">0.549669</td>
+<td style="text-align: right;">0.758012</td>
+<td style="text-align: right;">0.840658</td>
+</tr>
+<tr>
+<td style="text-align: left;">random_forest</td>
+<td style="text-align: right;">0.715686</td>
+<td style="text-align: right;">0.802198</td>
+<td style="text-align: right;">0.849565</td>
+<td style="text-align: right;">0.977036</td>
+</tr>
+</tbody>
+</table>
+<h2>混淆矩陣摘要</h2>
+<pre><code class="language-text">- logistic_regression: TP=84, FN=18, FP=371, TN=2527
+- decision_tree: TP=83, FN=19, FP=117, TN=2781
+- random_forest: TP=73, FN=29, FP=7, TN=2891
+</code></pre>
+<h2>特徵重要度（Random Forest）</h2>
+<pre><code class="language-text">- torque: 0.2193
+- rotational_speed: 0.2157
+- tool_wear: 0.2052
+- torque_speed_product: 0.1892
+- temperature_difference: 0.0839
+- air_temperature: 0.0472
+- process_temperature: 0.0296
+- type_M: 0.0066
+</code></pre>
+<h2>結論</h2>
+<ul>
+<li>三組基準模型中，以 F1 最優者為 <code>random_forest</code>。</li>
+<li>由於類別不平衡，PR-AUC 與 Recall 是本任務較具參考價值的指標；Precision-Recall 曲線見 <code>figures/ai4i_precision_recall_curves.png</code>。</li>
+<li>後續可再比較：閾值調校、SMOTE 過採樣、以及 Gradient Boosting 系列模型。</li>
+</ul>
+</body>
+</html>

@@ -1,0 +1,92 @@
+{
+  "random_seed": 42,
+  "test_size": 0.3,
+  "train_rows": 7000,
+  "test_rows": 3000,
+  "positive_class_rate_train": 0.033857142857142856,
+  "positive_class_rate_test": 0.034,
+  "models": {
+    "logistic_regression": {
+      "precision": 0.18461538461538463,
+      "recall": 0.8235294117647058,
+      "f1": 0.3016157989228007,
+      "class_0_precision": 0.9929273084479371,
+      "class_0_recall": 0.8719806763285024,
+      "class_0_f1": 0.9285320595259967,
+      "pr_auc": 0.42423454011692374,
+      "roc_auc": 0.9170963071218824,
+      "confusion_matrix": [
+        [
+          2527,
+          371
+        ],
+        [
+          18,
+          84
+        ]
+      ]
+    },
+    "decision_tree": {
+      "precision": 0.415,
+      "recall": 0.8137254901960784,
+      "f1": 0.5496688741721855,
+      "class_0_precision": 0.9932142857142857,
+      "class_0_recall": 0.9596273291925466,
+      "class_0_f1": 0.9761319761319761,
+      "pr_auc": 0.7580123932819723,
+      "roc_auc": 0.8406575190462657,
+      "confusion_matrix": [
+        [
+          2781,
+          117
+        ],
+        [
+          19,
+          83
+        ]
+      ]
+    },
+    "random_forest": {
+      "precision": 0.9125,
+      "recall": 0.7156862745098039,
+      "f1": 0.8021978021978022,
+      "class_0_precision": 0.9900684931506849,
+      "class_0_recall": 0.9975845410628019,
+      "class_0_f1": 0.9938123066345823,
+      "pr_auc": 0.8495651521420342,
+      "roc_auc": 0.9770362251180665,
+      "confusion_matrix": [
+        [
+          2891,
+          7
+        ],
+        [
+          29,
+          73
+        ]
+      ]
+    }
+  },
+  "best_model_by_f1": "random_forest",
+  "rf_feature_importance": {
+    "air_temperature": 0.0472,
+    "process_temperature": 0.0296,
+    "rotational_speed": 0.2157,
+    "torque": 0.2193,
+    "tool_wear": 0.2052,
+    "torque_speed_product": 0.1892,
+    "temperature_difference": 0.0839,
+    "type_M": 0.0066,
+    "type_H": 0.0035
+  },
+  "permutation_importance": {
+    "rotational_speed": 0.01677,
+    "torque": 0.01377,
+    "temperature_difference": 0.01177,
+    "torque_speed_product": 0.01083,
+    "tool_wear": 0.0101,
+    "air_temperature": 0.00607,
+    "type": 0.00237,
+    "process_temperature": 0.00027
+  }
+}

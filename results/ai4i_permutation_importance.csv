@@ -1,0 +1,9 @@
+feature,importance_mean,importance_std
+rotational_speed,0.01677,0.00142
+torque,0.01377,0.00103
+temperature_difference,0.01177,0.00098
+torque_speed_product,0.01083,0.00043
+tool_wear,0.0101,0.00163
+air_temperature,0.00607,0.00061
+type,0.00237,0.00077
+process_temperature,0.00027,0.00074

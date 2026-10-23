@@ -1,0 +1,2 @@
+RED 階段：新增 tests/test_ai4i_models.py 前，11 個測試項目無任何自動化覆蓋（無法提供 GREEN 證據）。
+首跑結果：11 passed（implementaion 已符合規格，未偵測到實作缺陷，無需修改 scripts/run_ai4i_analysis.py）。
