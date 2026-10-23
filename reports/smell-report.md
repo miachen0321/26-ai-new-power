@@ -106,3 +106,9 @@
 - 修了什麼：jscpd 追加 `--ignore "**/docs/results.json"`（與 #13 的 docs/report 排除並存）。results.json 是訓練管線產出的資料檔，內容一字未動；排除後剩餘重複全為手寫碼與頁面模板。
 - 警告數變化：jscpd **17 → 15 clones**、181 → 137 行、3.88% → **3.31%**；eslint 0；knip 0。
 - 測試數：pytest **95 passed**；golden 6 案例 OK；docs-test 3 組行為 OK。全綠，無紅燈。
+
+### 記錄 5 — issue #16：tests/ 重複片段（未修，依約束止步）
+- 檢出內容：test_ai4i_analysis.py:51-58 ↔ test_ai4i_features.py:97-103 逐字相同的 8 行，**全部是** `np.testing.assert_allclose(...)` 斷言（torque_speed_product 與 temperature_difference 的公式驗證），不含任何準備程式碼。
+- 修了什麼：**無**。抽成 helper 必須改寫兩處斷言呼叫，與「不得修改任何測試的斷言」約束直接衝突，依約束止步不改。
+- 警告數變化：jscpd 維持 **15 clones / 137 行 / 3.31%**；eslint 0；knip 0。
+- 測試數：pytest **95 passed**；golden 6 案例 OK；docs-test 3 組行為 OK。全綠。
