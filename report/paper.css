@@ -1,0 +1,165 @@
+@page {
+  size: A4;
+  margin: 2.2cm 2cm;
+}
+
+body {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 4rem;
+  font-family: "Noto Sans CJK TC", "Noto Serif CJK TC", "PingFang TC",
+    "Microsoft JhengHei", "Helvetica Neue", Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.85;
+  color: #222;
+  background: #fff;
+}
+
+header#title-block-header {
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 3px solid #315b7d;
+}
+
+h1.title {
+  font-size: 1.9rem;
+  line-height: 1.35;
+  color: #1f3d55;
+  margin-bottom: 0.4rem;
+}
+
+p.subtitle {
+  font-size: 1.05rem;
+  color: #4c6b80;
+  margin-top: 0;
+}
+
+p.author,
+p.date {
+  color: #666;
+  font-size: 0.92rem;
+  margin: 0.15rem 0;
+}
+
+h1 {
+  font-size: 1.55rem;
+  color: #1f3d55;
+  margin-top: 2.8rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid #d7e1e8;
+}
+
+h2 {
+  font-size: 1.22rem;
+  color: #315b7d;
+  margin-top: 2rem;
+}
+
+h3 {
+  font-size: 1.05rem;
+  color: #3d6684;
+}
+
+p {
+  text-align: justify;
+  margin: 0.75rem 0;
+}
+
+figure {
+  margin: 1.8rem 0;
+  text-align: center;
+}
+
+figure img {
+  max-width: 100%;
+  height: auto;
+  border: 1px solid #e3e8ec;
+  border-radius: 4px;
+}
+
+figcaption {
+  font-size: 0.88rem;
+  color: #666;
+  margin-top: 0.5rem;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1.2rem 0;
+  font-size: 0.9rem;
+}
+
+th,
+td {
+  border: 1px solid #d7e1e8;
+  padding: 0.45rem 0.65rem;
+  text-align: left;
+}
+
+th {
+  background: #edf3f7;
+  color: #1f3d55;
+  font-weight: 600;
+}
+
+tr:nth-child(even) td {
+  background: #fafcfd;
+}
+
+code {
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 0.88em;
+  background: #f2f5f7;
+  padding: 0.1em 0.3em;
+  border-radius: 3px;
+}
+
+pre {
+  background: #f5f7f9;
+  border: 1px solid #e3e8ec;
+  border-radius: 4px;
+  padding: 1rem;
+  overflow-x: auto;
+  line-height: 1.55;
+}
+
+pre code {
+  background: transparent;
+  padding: 0;
+}
+
+blockquote {
+  border-left: 4px solid #9db6c8;
+  margin: 1rem 0;
+  padding: 0.2rem 1rem;
+  color: #4c5c68;
+  background: #f7fafb;
+}
+
+a {
+  color: #2b6a9b;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid #d7e1e8;
+  margin: 2.5rem 0;
+}
+
+@media print {
+  body {
+    max-width: none;
+    padding: 0;
+    font-size: 11pt;
+  }
+
+  h1 {
+    page-break-after: avoid;
+  }
+
+  figure,
+  table {
+    page-break-inside: avoid;
+  }
+}

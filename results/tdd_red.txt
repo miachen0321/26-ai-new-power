@@ -1,0 +1,73 @@
+
+==================================== ERRORS ====================================
+_____________________ ERROR collecting tests/test_data.py ______________________
+ImportError while importing test module '/root/26-ai-new-power/tests/test_data.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_data.py:4: in <module>
+    from iris_lab.data import (
+E   ModuleNotFoundError: No module named 'iris_lab'
+___________________ ERROR collecting tests/test_features.py ____________________
+ImportError while importing test module '/root/26-ai-new-power/tests/test_features.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_features.py:3: in <module>
+    from iris_lab.data import load_data
+E   ModuleNotFoundError: No module named 'iris_lab'
+___________________ ERROR collecting tests/test_modeling.py ____________________
+ImportError while importing test module '/root/26-ai-new-power/tests/test_modeling.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_modeling.py:5: in <module>
+    from iris_lab.data import load_data
+E   ModuleNotFoundError: No module named 'iris_lab'
+------------------------------- Captured stderr --------------------------------
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+I0000 00:00:1792722569.716106   52883 cudart_stub.cc:31] Could not find cuda drivers on your machine, GPU will not be used.
+I0000 00:00:1792722569.807796   52883 cpu_feature_guard.cc:227] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+I0000 00:00:1792722573.730785   52883 cudart_stub.cc:31] Could not find cuda drivers on your machine, GPU will not be used.
+=============================== warnings summary ===============================
+../../usr/local/lib/python3.13/dist-packages/matplotlib/_fontconfig_pattern.py:64
+  /usr/local/lib/python3.13/dist-packages/matplotlib/_fontconfig_pattern.py:64: PyparsingDeprecationWarning: 'oneOf' deprecated - use 'one_of'
+    prop = Group((name + Suppress("=") + comma_separated(value)) | oneOf(_CONSTANTS))
+
+../../usr/local/lib/python3.13/dist-packages/matplotlib/_fontconfig_pattern.py:85
+../../usr/local/lib/python3.13/dist-packages/matplotlib/_fontconfig_pattern.py:85
+../../usr/local/lib/python3.13/dist-packages/matplotlib/_fontconfig_pattern.py:85
+../../usr/local/lib/python3.13/dist-packages/matplotlib/_fontconfig_pattern.py:85
+../../usr/local/lib/python3.13/dist-packages/matplotlib/_fontconfig_pattern.py:85
+../../usr/local/lib/python3.13/dist-packages/matplotlib/_fontconfig_pattern.py:85
+  /usr/local/lib/python3.13/dist-packages/matplotlib/_fontconfig_pattern.py:85: PyparsingDeprecationWarning: 'parseString' deprecated - use 'parse_string'
+    parse = parser.parseString(pattern)
+
+../../usr/local/lib/python3.13/dist-packages/matplotlib/_fontconfig_pattern.py:89
+../../usr/local/lib/python3.13/dist-packages/matplotlib/_fontconfig_pattern.py:89
+../../usr/local/lib/python3.13/dist-packages/matplotlib/_fontconfig_pattern.py:89
+../../usr/local/lib/python3.13/dist-packages/matplotlib/_fontconfig_pattern.py:89
+../../usr/local/lib/python3.13/dist-packages/matplotlib/_fontconfig_pattern.py:89
+../../usr/local/lib/python3.13/dist-packages/matplotlib/_fontconfig_pattern.py:89
+  /usr/local/lib/python3.13/dist-packages/matplotlib/_fontconfig_pattern.py:89: PyparsingDeprecationWarning: 'resetCache' deprecated - use 'reset_cache'
+    parser.resetCache()
+
+../../usr/local/lib/python3.13/dist-packages/matplotlib/_mathtext.py:45
+  /usr/local/lib/python3.13/dist-packages/matplotlib/_mathtext.py:45: PyparsingDeprecationWarning: 'enablePackrat' deprecated - use 'enable_packrat'
+    ParserElement.enablePackrat()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+ERROR tests/test_data.py
+ERROR tests/test_features.py
+ERROR tests/test_modeling.py
+!!!!!!!!!!!!!!!!!!! Interrupted: 3 errors during collection !!!!!!!!!!!!!!!!!!!!
+14 warnings, 3 errors in 9.40s
