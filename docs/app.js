@@ -99,12 +99,24 @@ if (typeof document !== "undefined") {
     return { "未失效 OK": 1 - p, "失效 FAILURE": p };
   }
 
-  function runIris() {
-    const vals = ["i-sepal-length", "i-sepal-width", "i-petal-length", "i-petal-width"]
-      .map((id) => parseFloat(document.getElementById(id).value));
+  function readInputs(ids) {
+    return ids.map((id) => parseFloat(document.getElementById(id).value));
+  }
+
+  function requireInputs(vals) {
     for (const v of vals) {
-      if (Number.isNaN(v)) { noteBox.textContent = "尚有欄位未填數值"; resultBox.style.display = "block"; return; }
+      if (Number.isNaN(v)) {
+        noteBox.textContent = "尚有欄位未填數值";
+        resultBox.style.display = "block";
+        return false;
+      }
     }
+    return true;
+  }
+
+  function runIris() {
+    const vals = readInputs(["i-sepal-length", "i-sepal-width", "i-petal-length", "i-petal-width"]);
+    if (!requireInputs(vals)) return;
     const probs = predictIris(...vals);
     let best = 0;
     probs.forEach((p, i) => { if (p > probs[best]) best = i; });
@@ -116,11 +128,8 @@ if (typeof document !== "undefined") {
   }
 
   function runAI4I() {
-    const vals = ["a-air", "a-process", "a-rpm", "a-torque", "a-wear"]
-      .map((id) => parseFloat(document.getElementById(id).value));
-    for (const v of vals) {
-      if (Number.isNaN(v)) { noteBox.textContent = "尚有欄位未填數值"; resultBox.style.display = "block"; return; }
-    }
+    const vals = readInputs(["a-air", "a-process", "a-rpm", "a-torque", "a-wear"]);
+    if (!requireInputs(vals)) return;
     const type = document.getElementById("a-type").value;
     const prob = predictAI4I(...vals, type);
     const pairs = Object.entries(percentFromProb(prob.failure)).sort((a, b) => b[1] - a[1]);

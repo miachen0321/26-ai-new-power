@@ -77,8 +77,17 @@
 ## 5. 建議（後續追蹤皆已有事件單）
 
 1. #15（中）：Python 端抽出共用 helper——`save_figure`、RF pipeline factory、曲線資料產生器；需確保同 seed 行為不變（#7 reproducibility 測試為防護網）。
-2. #11（低）：app.js 抽 `readInputs(ids)` 替換兩處輸入驗證。
+2. #11（低）：app.js 抽 `readInputs(ids)` 替換兩處輸入驗證。→ **已修復（見 §6 記錄 1）**
 3. #12（低）：兩頁抽出共用 `static-style.css`；或接受單檔自足。
 4. #13/#14（資訊性）：在 jscpd 設定中把生成物（docs/report/**、docs/results.json）加入 ignore，讓純手寫碼的重複率更能反應現實（當前 4.84% 中絕大部分來自生成物）。
 
 工具輸出原文：`results/static/eslint.log`、`results/static/jscpd.log`、`results/static/knip.log`、HTML 報表 `results/static/jscpd/jscpd-report.html`。
+
+## 6. Lab4 修復記錄（一次一項，每項全綠才下一項）
+
+基線（前置：修 `scripts/static_check.sh` eslint node 範圍加 `--no-error-on-unmatched-pattern`，因 scripts/ 無 JS 時 eslint 10 直接報錯）：eslint 0／jscpd **36 clones、302 行、5.49%**／knip 0。
+
+### 記錄 1 — issue #11：docs/app.js 輸入驗證重複
+- 修了什麼：app.js 抽出共用 helper `readInputs(ids)`（parseFloat 逐欄讀值）與 `requireInputs(vals)`（NaN → 顯示「尚有欄位未填數值」並回傳 false），`runIris`／`runAI4I` 兩處改呼叫 helper；id 順序、錯誤訊息、Number.isNaN 行為不變。檔案 142 → 151 行。
+- 警告數變化：jscpd **36 → 35 clones**、302 → 296 行、5.49% → **5.37%**（app.js 1 處重複消滅）；eslint 0（無新增違規、無 disable）。
+- 測試數：pytest **95 passed**；`npm run frontend-test` golden 6 案例 OK；`npm run docs-test` 3 組行為 OK。全綠，無紅燈。
