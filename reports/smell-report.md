@@ -101,3 +101,8 @@
 - 修了什麼：`scripts/static_check.sh` 的 jscpd 加 `--ignore "**/docs/report/**"`。這些 HTML 是 `scripts/md_to_html.py` 由 markdown 生成的生成物，不手改內容；排除後 jscpd 只反映手寫碼。**未動** docs/report/ 任何檔案。
 - 警告數變化：jscpd **34 → 17 clones**、287 → 181 行、5.21% → **3.88%**；eslint 0；knip 0。jscpd 仍 exit 1（剩餘為 #14/#15/#16 範圍的手寫碼重複，門檻 1% 需後續項目逐步消化）。
 - 測試數：pytest **95 passed**；golden 6 案例 OK；docs-test 3 組行為 OK。全綠，無紅燈。
+
+### 記錄 4 — issue #14：生成物 docs/results.json 資料同構重複（2 處）
+- 修了什麼：jscpd 追加 `--ignore "**/docs/results.json"`（與 #13 的 docs/report 排除並存）。results.json 是訓練管線產出的資料檔，內容一字未動；排除後剩餘重複全為手寫碼與頁面模板。
+- 警告數變化：jscpd **17 → 15 clones**、181 → 137 行、3.88% → **3.31%**；eslint 0；knip 0。
+- 測試數：pytest **95 passed**；golden 6 案例 OK；docs-test 3 組行為 OK。全綠，無紅燈。

@@ -1,4 +1,4 @@
 == 2/3 jscpd (duplication, threshold 1%) ==
-[1mDuplications detection: Found 17 exact clones with 181(3.88%) duplicated lines in 32 (6 formats) files.[22m
+[1mDuplications detection: Found 15 exact clones with 137(3.31%) duplicated lines in 31 (6 formats) files.[22m
 [32mHTML report saved to /root/26-ai-new-power/results/static/jscpd/jscpd-report.html[39m
-ERROR: jscpd found too many duplicates (3.9%) over threshold (1.0%)
+ERROR: jscpd found too many duplicates (3.3%) over threshold (1.0%)
