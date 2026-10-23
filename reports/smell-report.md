@@ -79,7 +79,7 @@
 1. #15（中）：Python 端抽出共用 helper——`save_figure`、RF pipeline factory、曲線資料產生器；需確保同 seed 行為不變（#7 reproducibility 測試為防護網）。
 2. #11（低）：app.js 抽 `readInputs(ids)` 替換兩處輸入驗證。→ **已修復（見 §6 記錄 1）**
 3. #12（低）：兩頁抽出共用 `static-style.css`；或接受單檔自足。
-4. #13/#14（資訊性）：在 jscpd 設定中把生成物（docs/report/**、docs/results.json）加入 ignore，讓純手寫碼的重複率更能反應現實（當前 4.84% 中絕大部分來自生成物）。
+4. #13/#14（資訊性）：在 jscpd 設定中把生成物（docs/report/**、docs/results.json）加入 ignore，讓純手寫碼的重複率更能反應現實（當前 4.84% 中絕大部分來自生成物）。→ **處理中（見 §6 記錄 3、4）**
 
 工具輸出原文：`results/static/eslint.log`、`results/static/jscpd.log`、`results/static/knip.log`、HTML 報表 `results/static/jscpd/jscpd-report.html`。
 
@@ -91,3 +91,8 @@
 - 修了什麼：app.js 抽出共用 helper `readInputs(ids)`（parseFloat 逐欄讀值）與 `requireInputs(vals)`（NaN → 顯示「尚有欄位未填數值」並回傳 false），`runIris`／`runAI4I` 兩處改呼叫 helper；id 順序、錯誤訊息、Number.isNaN 行為不變。檔案 142 → 151 行。
 - 警告數變化：jscpd **36 → 35 clones**、302 → 296 行、5.49% → **5.37%**（app.js 1 處重複消滅）；eslint 0（無新增違規、無 disable）。
 - 測試數：pytest **95 passed**；`npm run frontend-test` golden 6 案例 OK；`npm run docs-test` 3 組行為 OK。全綠，無紅燈。
+
+### 記錄 2 — issue #12：docs/index.html ↔ docs/inference.html 檔頭樣式重複
+- 修了什麼：兩頁完全相同的 7 條規則（`:root`、`*`、`body`、`main`、`h1`、`.intro`、`a`）抽到新檔 `docs/static-style.css`（8 行），兩頁以 `<link rel="stylesheet" href="static-style.css">` 引用並維持原 cascade 順序；頁面專屬規則留在各自 `<style>`（index 49 行、inference 29 行）。index.html 132 → 126 行、inference.html 95 → 89 行。
+- 警告數變化：jscpd **35 → 34 clones**、296 → 287 行、5.37% → **5.21%**（#12 兩處偏高重複消失）；eslint 0。
+- 測試數：pytest **95 passed**；golden 6 案例 OK；docs-test 3 組行為 OK。全綠，無紅燈。
