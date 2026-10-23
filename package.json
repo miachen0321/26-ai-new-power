@@ -1,0 +1,25 @@
+{
+  "name": "26-ai-new-power",
+  "private": true,
+  "version": "0.1.0",
+  "description": "ML analysis project: Iris neural network and AI4I 2020 predictive maintenance",
+  "scripts": {
+    "static-check": "bash scripts/static_check.sh"
+  },
+  "knip": {
+    "entry": [
+      "docs/app.js",
+      "docs/site.js"
+    ],
+    "include": [
+      "dependencies",
+      "devDependencies",
+      "unlisted",
+      "exports",
+      "files"
+    ],
+    "ignore": [
+      "eslint.config.mjs"
+    ]
+  }
+}
