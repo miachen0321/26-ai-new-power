@@ -1,0 +1,8 @@
+/* 共用樣式：docs/index.html 與 docs/inference.html 共用 */
+  :root { font-family: system-ui, -apple-system, "Noto Sans TC", sans-serif; color: #17233b; background: #f3f6fb; }
+  * { box-sizing: border-box; }
+  body { margin: 0; }
+  main { max-width: 1080px; margin: auto; padding: 36px 20px 56px; }
+  h1 { margin: 0 0 8px; font-size: clamp(1.8rem, 4vw, 2.6rem); }
+  .intro { color: #516078; line-height: 1.7; margin-bottom: 26px; }
+  a { color: #1765ba; }

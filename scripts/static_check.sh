@@ -13,7 +13,7 @@ node_modules/.bin/eslint "docs/**/*.js" >> "$OUT/eslint.log" 2>&1
 ESLINT=$?
 if find scripts tests -name "*.js" 2>/dev/null | grep -q .; then
   echo "-- node scope --" >> "$OUT/eslint.log"
-  node_modules/.bin/eslint "scripts/**/*.js" "tests/**/*.js" >> "$OUT/eslint.log" 2>&1
+  node_modules/.bin/eslint --no-error-on-unmatched-pattern "scripts/**/*.js" "tests/**/*.js" >> "$OUT/eslint.log" 2>&1
   ESLINT=$?
 else
   echo "-- node scope: no JS files yet, skipped --" >> "$OUT/eslint.log"
@@ -21,7 +21,7 @@ fi
 
 echo "== 2/3 jscpd (duplication, threshold 1%) ==" > "$OUT/jscpd.log"
 node_modules/.bin/jscpd "docs" "scripts" "tests" \
-  --min-tokens 30 --threshold 1 --reporters consoleFull,html --output "$OUT/jscpd" --silent \
+  --min-tokens 30 --threshold 1 --ignore "**/docs/report/**" --ignore "**/docs/results.json" --reporters consoleFull,html --output "$OUT/jscpd" --silent \
   >> "$OUT/jscpd.log" 2>&1
 JSCPD=$?
 

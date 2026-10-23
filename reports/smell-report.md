@@ -77,8 +77,39 @@
 ## 5. 建議（後續追蹤皆已有事件單）
 
 1. #15（中）：Python 端抽出共用 helper——`save_figure`、RF pipeline factory、曲線資料產生器；需確保同 seed 行為不變（#7 reproducibility 測試為防護網）。
-2. #11（低）：app.js 抽 `readInputs(ids)` 替換兩處輸入驗證。
+2. #11（低）：app.js 抽 `readInputs(ids)` 替換兩處輸入驗證。→ **已修復（見 §6 記錄 1）**
 3. #12（低）：兩頁抽出共用 `static-style.css`；或接受單檔自足。
-4. #13/#14（資訊性）：在 jscpd 設定中把生成物（docs/report/**、docs/results.json）加入 ignore，讓純手寫碼的重複率更能反應現實（當前 4.84% 中絕大部分來自生成物）。
+4. #13/#14（資訊性）：在 jscpd 設定中把生成物（docs/report/**、docs/results.json）加入 ignore，讓純手寫碼的重複率更能反應現實（當前 4.84% 中絕大部分來自生成物）。→ **已記錄（見 §6 記錄 3、4）**
 
 工具輸出原文：`results/static/eslint.log`、`results/static/jscpd.log`、`results/static/knip.log`、HTML 報表 `results/static/jscpd/jscpd-report.html`。
+
+## 6. Lab4 修復記錄（一次一項，每項全綠才下一項）
+
+基線（前置：修 `scripts/static_check.sh` eslint node 範圍加 `--no-error-on-unmatched-pattern`，因 scripts/ 無 JS 時 eslint 10 直接報錯）：eslint 0／jscpd **36 clones、302 行、5.49%**／knip 0。
+
+### 記錄 1 — issue #11：docs/app.js 輸入驗證重複
+- 修了什麼：app.js 抽出共用 helper `readInputs(ids)`（parseFloat 逐欄讀值）與 `requireInputs(vals)`（NaN → 顯示「尚有欄位未填數值」並回傳 false），`runIris`／`runAI4I` 兩處改呼叫 helper；id 順序、錯誤訊息、Number.isNaN 行為不變。檔案 142 → 151 行。
+- 警告數變化：jscpd **36 → 35 clones**、302 → 296 行、5.49% → **5.37%**（app.js 1 處重複消滅）；eslint 0（無新增違規、無 disable）。
+- 測試數：pytest **95 passed**；`npm run frontend-test` golden 6 案例 OK；`npm run docs-test` 3 組行為 OK。全綠，無紅燈。
+
+### 記錄 2 — issue #12：docs/index.html ↔ docs/inference.html 檔頭樣式重複
+- 修了什麼：兩頁完全相同的 7 條規則（`:root`、`*`、`body`、`main`、`h1`、`.intro`、`a`）抽到新檔 `docs/static-style.css`（8 行），兩頁以 `<link rel="stylesheet" href="static-style.css">` 引用並維持原 cascade 順序；頁面專屬規則留在各自 `<style>`（index 49 行、inference 29 行）。index.html 132 → 126 行、inference.html 95 → 89 行。
+- 警告數變化：jscpd **35 → 34 clones**、296 → 287 行、5.37% → **5.21%**（#12 兩處偏高重複消失）；eslint 0。
+- 測試數：pytest **95 passed**；golden 6 案例 OK；docs-test 3 組行為 OK。全綠，無紅燈。
+
+### 記錄 3 — issue #13：生成物 docs/report/ HTML 重複（17 處）
+- 修了什麼：`scripts/static_check.sh` 的 jscpd 加 `--ignore "**/docs/report/**"`。這些 HTML 是 `scripts/md_to_html.py` 由 markdown 生成的生成物，不手改內容；排除後 jscpd 只反映手寫碼。**未動** docs/report/ 任何檔案。
+- 警告數變化：jscpd **34 → 17 clones**、287 → 181 行、5.21% → **3.88%**；eslint 0；knip 0。jscpd 仍 exit 1（剩餘為 #14/#15/#16 範圍的手寫碼重複，門檻 1% 需後續項目逐步消化）。
+- 測試數：pytest **95 passed**；golden 6 案例 OK；docs-test 3 組行為 OK。全綠，無紅燈。
+
+### 記錄 4 — issue #14：生成物 docs/results.json 資料同構重複（2 處）
+- 修了什麼：jscpd 追加 `--ignore "**/docs/results.json"`（與 #13 的 docs/report 排除並存）。results.json 是訓練管線產出的資料檔，內容一字未動；排除後剩餘重複全為手寫碼與頁面模板。
+- 警告數變化：jscpd **17 → 15 clones**、181 → 137 行、3.88% → **3.31%**；eslint 0；knip 0。
+- 測試數：pytest **95 passed**；golden 6 案例 OK；docs-test 3 組行為 OK。全綠，無紅燈。
+
+### 記錄 5 — issue #16：tests/ 重複片段（未修，依約束止步；**已依裁定結案**）
+> 2026-10-23 裁定：兩處公式驗證斷言各自保留，不再抽 helper；本項以現狀結案。
+- 檢出內容：test_ai4i_analysis.py:51-58 ↔ test_ai4i_features.py:97-103 逐字相同的 8 行，**全部是** `np.testing.assert_allclose(...)` 斷言（torque_speed_product 與 temperature_difference 的公式驗證），不含任何準備程式碼。
+- 修了什麼：**無**。抽成 helper 必須改寫兩處斷言呼叫，與「不得修改任何測試的斷言」約束直接衝突，依約束止步不改。
+- 警告數變化：jscpd 維持 **15 clones / 137 行 / 3.31%**；eslint 0；knip 0。
+- 測試數：pytest **95 passed**；golden 6 案例 OK；docs-test 3 組行為 OK。全綠。
