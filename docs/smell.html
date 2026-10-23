@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="author" content="" />
+  <meta name="dcterms.date" content="" />
+  <title>Code Smell 分析報告（靜態頁）</title>
+  <link rel="stylesheet" href="paper.css" />
+</head>
+<body>
+<header id="title-block-header">
+  <h1 class="title">Code Smell 分析報告（靜態頁）</h1>
+  <p class="subtitle"></p>
+  <p class="author"></p>
+  <p class="date"></p>
+</header>
+<h1>Code Smell 報告</h1>
+<ul>
+<li>產生時間：2026-10-23／產生指令：<code>npm run static-check</code>（本次為 docs/ 與 scripts/ 範圍重跑摘錄）</li>
+<li>範圍：<code>docs/</code> 與 <code>scripts/</code>（依需求限定）；工具：ESLint 10.13.0 ＋ eslint-plugin-sonarjs 4.2.2、jscpd 5.4.2、knip 5.88.1</li>
+<li><strong>此報告僅陳述檢查結果，未修改任何程式碼</strong></li>
+</ul>
+<h2>1. 各項警告總數（依規則分組）</h2>
+<table>
+<thead>
+<tr>
+<th>規則</th>
+<th>門檻</th>
+<th style="text-align: right;">docs/</th>
+<th style="text-align: right;">scripts/</th>
+<th style="text-align: right;">合計</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>complexity</td>
+<td>max 10</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0（無 JS 檔）</td>
+<td style="text-align: right;"><strong>0</strong></td>
+</tr>
+<tr>
+<td>max-depth</td>
+<td>max 3</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0（無 JS 檔）</td>
+<td style="text-align: right;"><strong>0</strong></td>
+</tr>
+<tr>
+<td>max-lines-per-function</td>
+<td>max 50</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0（無 JS 檔）</td>
+<td style="text-align: right;"><strong>0</strong></td>
+</tr>
+<tr>
+<td>sonarjs/cognitive-complexity</td>
+<td>max 15</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0（無 JS 檔）</td>
+<td style="text-align: right;"><strong>0</strong></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>ESLint 總數：<strong>0 警告／0 錯誤</strong>（exit 0）。瀏覽器全域（window/document/fetch 等）與 Node 全域（require/module/process 等）分別宣告，無 no-undef 誤報。</li>
+<li><code>scripts/</code> 目前沒有任何 JavaScript 檔（僅 Python），因此 Node 範圍為 0 檔掃描；一旦加入 JS 檔，<code>npm run static-check</code> 會自動納入（見 <code>scripts/static_check.sh</code> 的 find 判斷）。</li>
+</ul>
+<h2>2. 重複率與重複片段位置（jscpd，min-tokens 30，門檻 1%）</h2>
+<p><strong>範圍統計：21 clones / 175 重複行 / 3613 總行數 → 重複率 4.84%</strong>（token 計 3.35%）——超出 1% 門檻，jscpd exit 1。</p>
+<p>重複片段依類型分組：</p>
+<h3>2-1 手寫 JS（1 處）</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>片段 A</th>
+<th>片段 B</th>
+<th>對應 issue</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><code>docs/app.js:103-108</code>（runIris 輸入驗證）</td>
+<td><code>docs/app.js:119-124</code>（runAI4I 輸入驗證）</td>
+<td>#11</td>
+</tr>
+</tbody>
+</table>
+<h3>2-2 手寫 HTML 檔頭樣式（2 處）</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>片段 A</th>
+<th>片段 B</th>
+<th>對應 issue</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2</td>
+<td><code>docs/index.html:1-6</code></td>
+<td><code>docs/inference.html:1-6</code></td>
+<td>#12</td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>docs/index.html:6-14</code></td>
+<td><code>docs/inference.html:6-14</code></td>
+<td>#12</td>
+</tr>
+</tbody>
+</table>
+<h3>2-3 生成物：docs/report/ HTML（17 處）</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>片段 A</th>
+<th>片段 B</th>
+<th>備註</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>4-5</td>
+<td><code>ai4i2020_prediction_paper.html:1-6</code>、<code>8-13</code></td>
+<td><code>report/ai4i_baselines.html:1-6</code>、<code>8-13</code></td>
+<td>pandoc 風格 head / paper.css</td>
+</tr>
+<tr>
+<td>6-18</td>
+<td><code>ai4i2020_prediction_paper.html</code> 自身 15 處（170-175↔393-398、259-264↔301-306/341-346、265-271↔309-315/351-357、301-306↔341-346、310-315↔352-357、318-323↔511-516、325-330↔516-521、393-398↔440-445）</td>
+<td>同檔</td>
+<td>markdown 表格/figure 章節樣板重複</td>
+</tr>
+</tbody>
+</table>
+<h3>2-4 生成物：docs/results.json 資料（2 處）</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>片段 A</th>
+<th>片段 B</th>
+<th>備註</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>19</td>
+<td><code>results.json:82-109</code></td>
+<td><code>results.json:129-156</code></td>
+<td>三模型 metrics 同構</td>
+</tr>
+<tr>
+<td>20</td>
+<td><code>results.json:110-125</code></td>
+<td><code>results.json:157-172</code></td>
+<td>同上</td>
+</tr>
+</tbody>
+</table>
+<h3>2-5 手寫 Python（scripts/，3 處）</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>片段 A</th>
+<th>片段 B</th>
+<th>對應 issue</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>21a</td>
+<td><code>scripts/run_ai4i_analysis.py:61-67</code>（save_figure）</td>
+<td><code>scripts/run_analysis.py:48-54</code>（同函式）</td>
+<td>#15</td>
+</tr>
+<tr>
+<td>21b</td>
+<td><code>scripts/run_ai4i_analysis.py:136-150</code></td>
+<td><code>scripts/run_ai4i_analysis.py:360-374</code>（RF pipeline 重組裝）</td>
+<td>#15</td>
+</tr>
+<tr>
+<td>21c</td>
+<td><code>scripts/run_ai4i_analysis.py:301-307</code></td>
+<td><code>scripts/run_ai4i_analysis.py:323-329</code>（曲線繪圖前重訓練片段）</td>
+<td>#15</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>註：先前全 repo 掃描（含 tests/）另有 <code>test_ai4i_analysis.py:50-61 ↔ test_ai4i_features.py:95-106</code>（#16），本次範圍限定不含 tests/。</p>
+</blockquote>
+<h2>3. 未使用的檔案與函式（knip 5.88.1）</h2>
+<table>
+<thead>
+<tr>
+<th>檢查項</th>
+<th>結果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>未使用檔案</td>
+<td><strong>0</strong>（<code>eslint.config.mjs</code> 已於 knip 設定標記為工具設定檔，非應用檔）</td>
+</tr>
+<tr>
+<td>未使用 exports / 函式</td>
+<td><strong>0</strong>（<code>docs/app.js</code> 的 <code>predictIris</code>、<code>predictAI4I</code> 經 <code>module.exports</code> 供測試使用）</td>
+</tr>
+<tr>
+<td>未使用依賴</td>
+<td><strong>0</strong>（4 個 devDependencies 皆被 static-check 流程引用）</td>
+</tr>
+</tbody>
+</table>
+<h2>4. 「前端推論」程式規模</h2>
+<p>前端推論＝<code>docs/app.js</code>（Iris MLP 前向傳播 ＋ AI4I LogReg sigmoid ＋ 表單接線）＋ <code>docs/inference.html</code>（表單 UI）。</p>
+<table>
+<thead>
+<tr>
+<th>檔案</th>
+<th style="text-align: right;">總行數</th>
+<th style="text-align: right;">函式數</th>
+<th>函式清單</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>docs/app.js</code></td>
+<td style="text-align: right;">142</td>
+<td style="text-align: right;"><strong>6</strong></td>
+<td><code>predictIris</code>、<code>predictAI4I</code>、<code>show</code>、<code>percentFromProb</code>、<code>runIris</code>、<code>runAI4I</code></td>
+</tr>
+<tr>
+<td><code>docs/inference.html</code></td>
+<td style="text-align: right;">95</td>
+<td style="text-align: right;">0</td>
+<td>純 HTML/CSS＋引用 app.js</td>
+</tr>
+<tr>
+<td><strong>前端推論合計</strong></td>
+<td style="text-align: right;"><strong>237</strong></td>
+<td style="text-align: right;"><strong>6</strong></td>
+<td>模型常數（Iris 權重 251 個、AI4I 係數 24 個）佔靜態資料，不含邏輯行</td>
+</tr>
+</tbody>
+</table>
+<p>對照用：首頁渲染直式資料 <code>docs/site.js</code> 為 95 行／7 個函式（renderIris、renderAI4I、renderEda、renderGallery、init、fmt、pct）＋外層 IIFE，屬「首頁展示」非推論邏輯。</p>
+<h2>5. 建議（後續追蹤皆已有事件單）</h2>
+<ol>
+<li>
+<h1>15（中）：Python 端抽出共用 helper——<code>save_figure</code>、RF pipeline factory、曲線資料產生器；需確保同 seed 行為不變（#7 reproducibility 測試為防護網）。</h1>
+</li>
+<li>
+<h1>11（低）：app.js 抽 <code>readInputs(ids)</code> 替換兩處輸入驗證。</h1>
+</li>
+<li>
+<h1>12（低）：兩頁抽出共用 <code>static-style.css</code>；或接受單檔自足。</h1>
+</li>
+<li>
+<h1>13/#14（資訊性）：在 jscpd 設定中把生成物（docs/report/**、docs/results.json）加入 ignore，讓純手寫碼的重複率更能反應現實（當前 4.84% 中絕大部分來自生成物）。</h1>
+</li>
+</ol>
+<p>工具輸出原文：<code>results/static/eslint.log</code>、<code>results/static/jscpd.log</code>、<code>results/static/knip.log</code>、HTML 報表 <code>results/static/jscpd/jscpd-report.html</code>。</p>
+</body>
+</html>
