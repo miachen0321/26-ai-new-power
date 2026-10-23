@@ -4,7 +4,8 @@
   "version": "0.1.0",
   "description": "ML analysis project: Iris neural network and AI4I 2020 predictive maintenance",
   "scripts": {
-    "static-check": "bash scripts/static_check.sh"
+    "static-check": "bash scripts/static_check.sh",
+    "frontend-test": "node tests/golden_frontend.test.js"
   },
   "knip": {
     "entry": [

@@ -1,0 +1,95 @@
+{
+  "description": "3 fixed inputs per model; expectations from real Python artifacts (seed 42)",
+  "tolerance": 1e-06,
+  "iris": [
+    {
+      "inputs": {
+        "sepal_length": 5.1,
+        "sepal_width": 3.5,
+        "petal_length": 1.4,
+        "petal_width": 0.2
+      },
+      "expected_class": "setosa",
+      "probabilities": {
+        "setosa": 0.9999731779098511,
+        "versicolor": 2.6841344151762314e-05,
+        "virginica": 2.2927071076069352e-14
+      }
+    },
+    {
+      "inputs": {
+        "sepal_length": 6.1,
+        "sepal_width": 2.9,
+        "petal_length": 4.7,
+        "petal_width": 1.4
+      },
+      "expected_class": "versicolor",
+      "probabilities": {
+        "setosa": 7.987091521499678e-06,
+        "versicolor": 0.9999374151229858,
+        "virginica": 5.4548978368984535e-05
+      }
+    },
+    {
+      "inputs": {
+        "sepal_length": 6.5,
+        "sepal_width": 3.0,
+        "petal_length": 5.2,
+        "petal_width": 2.0
+      },
+      "expected_class": "virginica",
+      "probabilities": {
+        "setosa": 3.323449515590937e-09,
+        "versicolor": 1.7619770531496215e-08,
+        "virginica": 1.0
+      }
+    }
+  ],
+  "ai4i": [
+    {
+      "inputs": {
+        "air_temperature": 298.1,
+        "process_temperature": 308.6,
+        "rotational_speed": 1551,
+        "torque": 42.8,
+        "tool_wear": 0,
+        "type": "L"
+      },
+      "expected_failure": 0,
+      "probabilities": {
+        "failure": 0.014948194570939662,
+        "ok": 0.9850518054290603
+      }
+    },
+    {
+      "inputs": {
+        "air_temperature": 298.6,
+        "process_temperature": 308.7,
+        "rotational_speed": 1408,
+        "torque": 46.3,
+        "tool_wear": 0,
+        "type": "M"
+      },
+      "expected_failure": 0,
+      "probabilities": {
+        "failure": 0.0389164523125073,
+        "ok": 0.9610835476874927
+      }
+    },
+    {
+      "inputs": {
+        "air_temperature": 299.2,
+        "process_temperature": 310.8,
+        "rotational_speed": 1360,
+        "torque": 65.7,
+        "tool_wear": 200,
+        "type": "L"
+      },
+      "expected_failure": 1,
+      "probabilities": {
+        "failure": 0.9318134290054177,
+        "ok": 0.06818657099458225
+      }
+    }
+  ]
+}

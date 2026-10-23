@@ -5,3 +5,5 @@ __pycache__/
 .DS_Store
 data/*.zip
 node_modules/
+node_modules/
+results/static/jscpd/
