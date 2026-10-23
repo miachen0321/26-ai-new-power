@@ -1,98 +1,126 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-Hant">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ML 分析結果（靜態網站）</title>
+<title>ML 分析結果：Iris 與 AI4I 2020</title>
 <style>
-  body { font-family: "Noto Sans CJK TC", "PingFang TC", "Microsoft JhengHei", Arial, sans-serif;
-         max-width: 900px; margin: 0 auto; padding: 2rem 1rem; line-height: 1.7; color: #222; }
-  h1 { color: #1f3d55; border-bottom: 2px solid #315b7d; padding-bottom: .4rem; }
-  h2 { color: #315b7d; margin-top: 2rem; }
-  table { border-collapse: collapse; width: 100%; font-size: .92rem; margin: .8rem 0; }
-  th, td { border: 1px solid #d7e1e8; padding: .45rem .6rem; text-align: left; }
-  th { background: #edf3f7; color: #1f3d55; }
-  .cards { display: flex; gap: 1rem; flex-wrap: wrap; }
-  .card { border: 1px solid #d7e1e8; border-radius: 6px; padding: 1rem 1.2rem; flex: 1 1 200px; background: #fafcfd; }
-  .card b { color: #1f3d55; font-size: 1.35rem; }
-  .muted { color: #666; font-size: .88rem; }
-  .gallery figure { margin: .8rem 0; }
-  .gallery img { max-width: 100%; border: 1px solid #e3e8ec; border-radius: 4px; }
-  pre.eda { background:#f5f7f9; border:1px solid #e3e8ec; padding: .8rem; white-space: pre-wrap; font-size:.85rem; }
-  nav a { margin-right: 1rem; }
+  :root { font-family: system-ui, -apple-system, "Noto Sans TC", sans-serif; color: #17233b; background: #f3f6fb; }
+  * { box-sizing: border-box; }
+  body { margin: 0; }
+  main { max-width: 1080px; margin: auto; padding: 36px 20px 56px; }
+  h1 { margin: 0 0 8px; font-size: clamp(1.8rem, 4vw, 2.6rem); }
+  .intro { color: #516078; line-height: 1.7; margin-bottom: 26px; }
+  a { color: #1765ba; }
+  nav { margin-bottom: 24px; display: flex; flex-wrap: wrap; gap: 10px; }
+  nav a { border: 1px solid #dbe3ef; background: white; border-radius: 9px; padding: 8px 14px; text-decoration: none; font-weight: 600; font-size: .95rem; box-shadow: 0 2px 10px #17396308; }
+  nav a:hover { background: #eff5fd; }
+  section { margin-bottom: 34px; }
+  h2 { font-size: 1.35rem; margin: 0 0 14px; }
+  h3 { font-size: 1.08rem; margin: 0 0 6px; }
+
+  .summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+  .summary article { position: relative; isolation: isolate; overflow: hidden; min-height: 330px; background: white; border: 1px solid #dbe3ef; border-radius: 16px; padding: 24px 24px 120px; box-shadow: 0 8px 28px #1739630d; }
+  .summary dl { display: grid; grid-template-columns: 1fr auto; gap: 8px 16px; margin: 14px 0; }
+  .summary dt { color: #516078; }
+  .summary dd { margin: 0; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .summary-links { margin: 12px 0 0; font-size: .95rem; }
+  .summary-art { position: absolute; inset: auto 0 0; height: 150px; z-index: 0; pointer-events: none; overflow: hidden; }
+  .summary-art::before, .summary-art::after { content: ""; position: absolute; inset: 0; background-image: var(--card-image); background-position: center bottom; background-size: cover; }
+  .summary-art::before { filter: blur(14px); opacity: .5; -webkit-mask-image: linear-gradient(to bottom, transparent, #000 40%, transparent 85%); mask-image: linear-gradient(to bottom, transparent, #000 40%, transparent 85%); }
+  .summary-art::after { filter: blur(1px); opacity: .55; -webkit-mask-image: linear-gradient(to bottom, transparent 18%, #000 90%); mask-image: linear-gradient(to bottom, transparent 18%, #000 90%); }
+  .summary-art--iris { --card-image: url("figures/pca_3d.png"); }
+  .summary-art--ai4i { --card-image: url("figures/ai4i_precision_recall_curves.png"); }
+  .cm-row { display: flex; gap: 10px; margin-top: 10px; }
+  .cm-cell { display: inline-flex; min-width: 46px; justify-content: center; padding: 5px 10px; border: 1px solid #e5eaf2; border-radius: 8px; background: #f6f8fc; font-variant-numeric: tabular-nums; }
+  .cm-cell.hit { background: #d9ebff; border-color: #bcd8f7; color: #0e4f98; font-weight: 700; }
+
+  .models { width: 100%; border-collapse: collapse; background: white; border: 1px solid #dbe3ef; border-radius: 12px; overflow: hidden; box-shadow: 0 8px 28px #1739630d; }
+  .models th, .models td { padding: 10px 14px; border-bottom: 1px solid #e5eaf2; text-align: left; font-size: .92rem; }
+  .models th { background: #edf3f7; color: #1f3d55; white-space: nowrap; }
+  .models tbody tr:last-child td { border-bottom: 0; }
+  .models td, .models th { font-variant-numeric: tabular-nums; }
+  .bar-cell { display: inline-block; vertical-align: middle; width: 110px; height: 9px; margin-right: 10px; background: #eef2f8; border-radius: 5px; overflow: hidden; }
+  .bar { display: block; height: 100%; min-width: 1px; border-radius: 5px; background: #3986d2; }
+  .bar--accent { background: #7a9e63; }
+
+  .feature-list { list-style: none; margin: 12px 0 0; padding: 20px 22px; background: white; border: 1px solid #dbe3ef; border-radius: 12px; box-shadow: 0 8px 28px #1739630d; }
+  .feature-list li { display: grid; grid-template-columns: 170px 1fr 52px; align-items: center; gap: 12px; padding: 6px 0; font-size: .92rem; font-variant-numeric: tabular-nums; }
+  .impl-label { color: #516078; }
+
+  .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
+  .panel { background: white; border: 1px solid #dbe3ef; border-radius: 16px; padding: 20px 22px; box-shadow: 0 8px 28px #1739630d; }
+  pre.eda { background: #f5f7f9; border: 1px solid #e3e8ec; padding: .8rem 1rem; white-space: pre-wrap; font-size: .82rem; line-height: 1.55; max-height: 420px; overflow: auto; border-radius: 8px; margin: 0; }
+
+  .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 18px; }
+  .gallery figure { margin: 0; background: white; border: 1px solid #dbe3ef; border-radius: 12px; padding: 10px 10px 8px; box-shadow: 0 4px 18px #1739630a; }
+  .gallery img { width: 100%; height: 160px; object-fit: cover; object-position: center; border-radius: 8px; display: block; }
+  .gallery figcaption { font-size: .78rem; color: #59687e; margin-top: 7px; word-break: break-all; }
+  .warning { color: #9b3b17; font-weight: 700; }
+  .footnote { color: #59687e; font-size: .85rem; }
+  @media (max-width: 560px) { .feature-list li { grid-template-columns: 120px 1fr 52px; } }
 </style>
 </head>
 <body>
-<h1>專案分析結果</h1>
-<nav>
-  <a href="inference.html">互動推論示範</a>
-  <a href="report/ai4i2020_prediction_paper.html">AI4I 小論文</a>
-  <a href="report/ai4i_baselines.html">AI4I 基準比較</a>
-  <a href="report/iris_neural_network_paper.html">Iris 小論文</a>
-  <a href="results.json">results.json</a>
-</nav>
-<p class="muted">本頁為純 HTML + JavaScript，資料全部取自 <code>results.json</code>，其內容逐值複製自 <code>results/</code> 現有產出，未重新訓練、未另行計算。</p>
+<main>
+  <h1>專案分析結果</h1>
+  <p class="intro">本頁在本機瀏覽器載入 <code>results.json</code>；其數值逐值複製自專案的 <code>results/</code> 產出（未重新訓練、未另行計算），圖表與小論公文由既有檔案搬運。以本機瀏覽需先起靜態伺服器：<code>python3 -m http.server -d docs 8000</code>。</p>
 
-<section id="ai4i"></section>
-<section id="iris"></section>
-<h2>資料探索摘要</h2>
-<section>
-  <h3>Iris</h3><pre class="eda" id="eda-iris">載入中…</pre>
-  <h3>AI4I</h3><pre class="eda" id="eda-ai4i">載入中…</pre>
-</section>
-<h2>圖表</h2>
-<div class="gallery" id="gallery"></div>
-<p class="muted">以本機瀏覽需先起靜態伺服器：<code>python3 -m http.server -d docs 8000</code></p>
+  <nav aria-label="站內導覽">
+    <a href="inference.html">🧪 互動推論示範</a>
+    <a href="report/ai4i2020_prediction_paper.html">📄 AI4I 小論文</a>
+    <a href="report/ai4i_baselines.html">📄 AI4I 基準比較</a>
+    <a href="report/iris_neural_network_paper.html">📄 Iris 小論文</a>
+    <a href="results.json" target="_blank" rel="noopener">🗂 results.json</a>
+  </nav>
 
-<script>
-fetch("results.json")
-  .then((r) => r.json())
-  .then((data) => {
-    const fmt = (v) => Number(v).toFixed(4);
+  <section class="summary" aria-label="既有實驗結果">
+    <article>
+      <h2>Iris 實驗結果</h2>
+      <div id="iris-metrics">載入既有指標中…</div>
+      <p class="summary-links"><a href="report/iris_neural_network_paper.html">閱讀 Iris 小論文</a> · <a href="figures/pca_3d.png" target="_blank" rel="noopener">查看 3D PCA 圖</a> · <a href="inference.html">前端互動推論</a></p>
+      <div class="summary-art summary-art--iris" aria-hidden="true"></div>
+    </article>
+    <article>
+      <h2>AI4I 實驗結果</h2>
+      <div id="ai4i-metrics">載入既有指標中…</div>
+      <p class="summary-links"><a href="report/ai4i2020_prediction_paper.html">閱讀 AI4I 小論文</a> · <a href="figures/ai4i_precision_recall_curves.png" target="_blank" rel="noopener">查看 PR 曲線</a> · <a href="inference.html">前端互動推論</a></p>
+      <div class="summary-art summary-art--ai4i" aria-hidden="true"></div>
+    </article>
+  </section>
 
-    const ai = data.ai4i;
-    const rows = Object.entries(ai.models).map(([name, m]) =>
-      "<tr><td>" + name + "</td><td>" + fmt(m.recall) + "</td><td>" + fmt(m.f1) + "</td>" +
-      "<td>" + fmt(m.pr_auc) + "</td><td>" + fmt(m.roc_auc) + "</td>" +
-      "<td>" + m.confusion_matrix[1][1] + " / " + m.confusion_matrix[1][0] +
-      " / " + m.confusion_matrix[0][1] + " / " + m.confusion_matrix[0][0] + "</td></tr>");
-    const imp = Object.entries(ai.rf_feature_importance)
-      .sort((a, b) => b[1] - a[1]).slice(0, 5)
-      .map(([k, v]) => k + " (" + fmt(v) + ")").join("、");
-    document.getElementById("ai4i").innerHTML =
-      "<h2>AI4I 2020 預測性維護（二元分類基準比較）</h2>" +
-      "<p>測試集 " + ai.test_rows.toLocaleString() + " 筆（訓練 " + ai.train_rows.toLocaleString() + "），分層 70/30、seed " +
-      ai.random_seed + "，最佳模型：<b>" + ai.best_model_by_f1 + "</b></p>" +
-      "<table><tr><th>模型</th><th>Recall</th><th>F1</th><th>PR-AUC</th><th>ROC-AUC</th><th>TP/FN/FP/TN</th></tr>" +
-      rows.join("") + "</table>" +
-      "<p>Random Forest 特徵重要度 Top 5：" + imp + "</p>" +
-      "<div class='cards'>" +
-        "<div class='card'>失效比例（訓練）<br><b>" + (ai.positive_class_rate_train * 100).toFixed(2) + "%</b></div>" +
-      "</div>";
+  <section>
+    <h2>混合矩陣（Iris，測試集 45 筆）</h2>
+    <div id="iris-cm" class="cm-row">載入中…</div>
+  </section>
 
-    const ir = data.iris;
-    document.getElementById("iris").innerHTML =
-      "<h2>Iris 神經網路分類</h2>" +
-      "<div class='cards'>" +
-        "<div class='card'>測試準確率<br><b>" + fmt(ir.test_accuracy) + "</b></div>" +
-        "<div class='card'>測試損失<br><b>" + fmt(ir.test_loss) + "</b></div>" +
-        "<div class='card'>類別分離 Macro AUC<br><b>" + fmt(ir.macro_auc) + "</b></div>" +
-        "<div class='card'>5 折交叉驗證<br><b>" + fmt(ir.cv_mean_accuracy) + " ± " + fmt(ir.cv_std_accuracy) + "</b></div>" +
-      "</div>" +
-      "<p class='muted'>訓練 " + ir.epochs_trained + " epochs、best epoch " + ir.best_epoch +
-      "（訓練/測試 = " + ir.train_size + "/" + ir.test_size + "）</p>";
+  <section>
+    <h2>AI4I 基準模型比較（測試集 3,000 筆）</h2>
+    <div id="ai4i-table">載入中…</div>
+    <p class="footnote">混淆矩陣欄位順序：TP / FN / FP / TN；PR-AUC 條寬與數值成正比。</p>
+  </section>
 
-    document.getElementById("eda-iris").textContent = data.iris_eda_markdown;
-    document.getElementById("eda-ai4i").textContent = data.ai4i_eda_markdown;
+  <section>
+    <h2>Random Forest 特徵重要度 Top 6</h2>
+    <ul class="feature-list" id="ai4i-importance">載入中…</ul>
+  </section>
 
-    document.getElementById("gallery").innerHTML = data.figures
-      .map((name) => "<figure><img src='figures/" + name + "' alt='" + name + "'><figcaption>" + name + "</figcaption></figure>")
-      .join("");
-  })
-  .catch((e) => {
-    document.getElementById("ai4i").innerHTML =
-      "<p>results.json 載入失敗：" + e.message + "。請以靜態伺服器開啟：<code>python3 -m http.server -d docs 8000</code></p>";
-  });
-</script>
+  <section>
+    <h2>資料探索摘要</h2>
+    <div class="grid2">
+      <div class="panel"><h3>Iris</h3><pre class="eda" id="eda-iris">載入中…</pre></div>
+      <div class="panel"><h3>AI4I 2020</h3><pre class="eda" id="eda-ai4i">載入中…</pre></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>圖表庫（19 張，複製自 figures/）</h2>
+    <div class="gallery" id="gallery">載入中…</div>
+  </section>
+
+  <p class="footnote">資料與模型訓練由 <code>scripts/run_analysis.py</code>、<code>scripts/run_ai4i_analysis.py</code> 產生；靜態站由 <code>scripts/build_docs_site.py</code> 搬移生成。內容僅供教學與實驗，不作為實際設備維護決策。</p>
+</main>
+<script src="site.js"></script>
+<script>site_init();</script>
 </body>
 </html>
